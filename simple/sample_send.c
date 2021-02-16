@@ -11,14 +11,13 @@
 #include<netinet/ip.h>	//Provides declarations for ip header
 #include<netinet/if_ether.h>	//For ETH_P_ALL
 #include<net/ethernet.h>	//For ether_header 
-#include <linux/if_packet.h>
+#include<linux/if_packet.h>
 #include<sys/socket.h>
 #include<arpa/inet.h>
 #include<sys/ioctl.h>
 #include<sys/time.h>
 #include<sys/types.h>
 #include<unistd.h>
-#include <sys/ioctl.h> 
 #include <net/if.h> 
 //#include <libexplain/ioctl.h>
 
@@ -39,12 +38,7 @@ int main(){
         printf("error on socoket\n");
 
     struct ifreq ifreq_i;
-    memset(&ifreq_i,0,sizeof(ifreq_i));
-    char* interface = "wlp0s20f3";
-    int interface_len =  strlen(interface); 
-    printf("%d\n", interface_len); 
-    strncpy(ifreq_i.ifr_name,interface,interface_len); //giving name of Interface
-    
+  
     if((ioctl(sock_raw,SIOCGIFINDEX,&ifreq_i))<0){
         printf("error in index ioctl reading\n");//getting Index Name
         int err = errno;
@@ -75,6 +69,11 @@ int main(){
     memset(sendbuff,0,64);    
 
     struct ethhdr *eth = (struct ethhdr *)(sendbuff);
+      memset(&ifreq_i,0,sizeof(ifreq_i));
+    char* interface = "wlp0s20f3";
+    int interface_len =  strlen(interface); 
+    printf("%d\n", interface_len); 
+    strncpy(ifreq_i.ifr_name,interface,interface_len); //giving name of Interface
     
     eth->h_source[0] = (unsigned char)(ifreq_c.ifr_hwaddr.sa_data[0]);
     eth->h_source[1] = (unsigned char)(ifreq_c.ifr_hwaddr.sa_data[1]);
